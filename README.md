@@ -2,8 +2,9 @@
 optimization for the initial values of rgb and reduction for the steps of iteration
 
 模块化设计思路:
-1. format: 数据处理模块
-2. optimize: 数值优化模块
-3. feedback: 数据反馈模块
-4. utils: 辅助工具模块
+1. parse: 解析器子包
+2. optimize: 优化器子包
+3. 一个项目一个模块
+   01. gamma项目
+   --. 数据报表系统
 
