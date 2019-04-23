@@ -5,6 +5,25 @@ import numpy
 
 class InertiaSolver(object):
     
+    def solve2norm_new(self, A, D, W_old=None, omega=1, epsilon=1.e-9):
+        '''
+        尝试近似的解析解效果
+        '''
+        rows, cols = A.shape
+        if W_old is None:
+            W_old = numpy.ones(shape=(cols, 1)) / cols
+        
+        item0 = numpy.identity(rows)
+        item1 = numpy.linalg.inv(epsilon * item0 + numpy.matmul(A, A.T))
+        item2 = numpy.matmul(A, W_old) - (1 + omega) * D
+        
+        beta = numpy.matmul(item1, item2)
+        
+        W = (W_old - numpy.matmul(A.T, beta)) / (1 + omega)
+        
+        return W
+        
+    
     def solve2norm(self, A, D, W_old=None, omega=1, epsilon1=1.e-6, epsilon2=1.e+6):
         '''
         优化问题:

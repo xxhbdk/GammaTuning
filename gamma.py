@@ -105,14 +105,14 @@ class GTInitial(DataPre, InertiaSolver):
             W = W0
             for idx, GrayLmax in enumerate(GrayLmax_band):
                 D_curr = self.init_D_and_A[GrayLmax][0]
-                # ????
+                # 初值预测
                 A_stop = self.stop_D_and_A[GrayLmax][1]
                 D_pred = numpy.matmul(A_stop, W).round().astype(int)
-                # ????
+                # 传统优化
                 D_stop = self.stop_D_and_A[GrayLmax][0]
                 rgb_pred_curr_real[GrayLmax] = numpy.hstack((D_pred, D_curr, D_stop))
-                # ????
-                W = self.solve2norm(A_stop, D_stop, W, omega=self.__omega)             #########################
+                # 权重更新
+                W = self.solve2norm_new(A_stop, D_stop, W, omega=self.__omega)             #########################
                 
                 if idx == 0:
                     W0 = W
@@ -211,7 +211,7 @@ if __name__ == '__main__':
     
     for ref_choose in range(5, ref_num+1):
         print('ref_choose = {}'.format(ref_choose))
-        obj.predict_rgb(ref_index_list=range(ref_choose), log_saved=False, fig_saved=False)
+        obj.predict_rgb(omega=0, ref_index_list=range(ref_choose), log_saved=False, fig_saved=False)
     
     obj.show_summary()
     
