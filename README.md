@@ -6,5 +6,5 @@ optimization for the initial values of rgb and reduction for the steps of iterat
 2. optimize: 优化器子包
 3. 一个项目一个模块
    01. gamma项目
-   02. report项目(数据报表系统)
+   02. gamma_report项目(报表系统)
 
