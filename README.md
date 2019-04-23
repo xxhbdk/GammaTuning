@@ -1,4 +1,4 @@
-# GammaTuning
+# JoJo
 optimization for the initial values of rgb and reduction for the steps of iteration
 
 模块化设计思路:
