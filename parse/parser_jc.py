@@ -1,10 +1,10 @@
-# 基础解析器1: 解析Link-JC Excel
+# 基础解析器1: 解析Link-JC.xls
 
 import numpy
 import pandas
 
-        
-class LinkJCExcel(object):
+
+class JCExcel(object):
 
     def __init__(self, filename):
         self.filename = filename
@@ -18,12 +18,15 @@ class LinkJCExcel(object):
         return self.sheet
         
     def __get_sheet(self):
-        excel = pandas.read_excel(self.filename, None)
-        
-        for sheet_name, sheet in excel.items():
-            if 'W-' in sheet_name:
-                self.sheet = sheet
-                return None
+        try:
+            excel = pandas.read_excel(self.filename, None)
+                
+            for sheet_name, sheet in excel.items():
+                if 'W-' in sheet_name:
+                    self.sheet = sheet
+                    return None
+        except Exception:
+            exit('>>> something wrong with "{}" <<<'.format(self.filename))
                 
     def __del_cols(self, labels=None):
         self.sheet.drop(labels=labels, axis=1, inplace=True)
@@ -82,6 +85,21 @@ class LinkJCExcel(object):
             self.__get_shape()
             
         return self.__bands_num, self.__Grays_num
+    
+    @property
+    def precision(self):
+        '''
+        获取计算精度abs(Lv - Lt) / Lt
+        '''
+        if not hasattr(self, 'stop_sheet'):
+            self.get_states()
+        if not hasattr(self, '__precision'):
+            self.__get_prec()
+            
+        return self.__precision
+        
+    def __get_prec(self):
+        self.__precision = ((self.stop_sheet['Lv'] - self.stop_sheet['Lv theory']).abs() / self.stop_sheet['Lv theory']).mean()
         
     def __get_shape(self):
         self.__bands_num = self.stop_sheet.loc[self.stop_sheet['Gray'] == self.__max_Gray, :].shape[0]
@@ -181,12 +199,15 @@ class LinkJCExcel(object):
         
         
 if __name__ == '__main__':
-    path_ref = './screens_ref/Rack1-Pg1-Link1-JC--20190331212201-OK.xls'
-    obj = LinkJCExcel(path_ref)
-    dominants = obj.get_dominants()
+    import os
+    filenames = list(os.path.join('./Gammaexcel', filename) for filename in os.listdir('./Gammaexcel'))
     
-    print(dominants)
-    print(obj)
-    print(obj.get_states()[1])
-    print(obj.get_attrs()['init_GrayLmax2rgb'])
-    print(obj.get_attrs()['stop_GrayLmax2rgb'])
+    for filename in filenames:
+        print(filename)
+        obj = LinkJCExcel(filename)
+        print(obj.shape)
+        
+    
+    
+    
+    

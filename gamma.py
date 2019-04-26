@@ -14,7 +14,7 @@ from optimize.gamma_inertia import InertiaSolver
 class GTInitial(DataPre, InertiaSolver):
     
     def __init__(self, tar_path, ref_path, res_path='./screens_res'):
-        super(GTInitial, self).__init__('LinkJCExcel')
+        super(GTInitial, self).__init__('JCExcel')
         
         self.load_all_files(tar_path, ref_path)
         self.res_path = res_path
@@ -111,9 +111,11 @@ class GTInitial(DataPre, InertiaSolver):
                 # 传统优化
                 D_stop = self.stop_D_and_A[GrayLmax][0]
                 rgb_pred_curr_real[GrayLmax] = numpy.hstack((D_pred, D_curr, D_stop))
-                # 权重更新
-                W = self.solve2norm_new(A_stop, D_stop, W, omega=self.__omega)             #########################
-                
+                # 权重更新(添加仿射约束)
+                A_stop2 = numpy.vstack((A_stop, numpy.ones(shape=(1, A_stop.shape[1]))))
+                D_stop2 = numpy.vstack((D_stop, numpy.ones(shape=(1, D_stop.shape[1]))))
+                W = self.solve2norm_new(A_stop2, D_stop2, W, omega=self.__omega)
+
                 if idx == 0:
                     W0 = W
         
@@ -188,7 +190,7 @@ class GTInitial(DataPre, InertiaSolver):
         mean_list = numpy.array(mean_list)
         
         if self.__graph_saved:
-            fig = plt.figure(figsize=(8, 6))
+            fig = plt.figure(figsize=(12, 6))
             ax1 = plt.subplot()
             ax1.plot(range(mean_list.shape[0]), mean_list[:, 0], label='$pred$')
             ax1.plot(range(mean_list.shape[0]), mean_list[:, 1], label='$curr$')
@@ -208,6 +210,10 @@ if __name__ == '__main__':
     obj = GTInitial(tar_path, ref_path)
     
     tar_num, ref_num = obj.check_files()
+    
+    # for omega in numpy.arange(-0.3, 10, 0.01):
+        # print('omega = {}'.format(omega))
+    # obj.predict_rgb(omega=0, ref_index_list=range(5), log_saved=False, fig_saved=False)
     
     for ref_choose in range(5, ref_num+1):
         print('ref_choose = {}'.format(ref_choose))

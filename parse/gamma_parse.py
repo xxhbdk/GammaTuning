@@ -4,8 +4,7 @@
 import os
 import numpy
 
-from parse.link import LinkExcel
-from parse.linkjc import LinkJCExcel
+from parse.parser_jc import JCExcel
 
 
 class DataPre(object):
@@ -132,10 +131,10 @@ class DataPre(object):
     
     
 if __name__ == '__main__':
-    obj = DataPre('LinkJCExcel')
-    obj.load_all_files('screens_tar', 'screens_ref')
+    obj = DataPre('JCExcel')
+    obj.load_all_files('../screens_tar', '../screens_ref')
     # print(obj.instances)
-    # obj.filter_by_shape()
+    obj.filter_by_shape()
     # print(obj.instances)
-    init, stop = obj.get_D_and_A()
-    print(stop)
+    # init, stop = obj.get_D_and_A()
+    # print(stop)
