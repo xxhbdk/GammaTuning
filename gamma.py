@@ -14,7 +14,7 @@ from optimize.gamma_inertia import InertiaSolver
 class GTInitial(DataPre, InertiaSolver):
     
     def __init__(self, tar_path, ref_path, res_path='./screens_res'):
-        super(GTInitial, self).__init__('JCExcel')
+        super(GTInitial, self).__init__('JCEXCEL')
         
         self.load_all_files(tar_path, ref_path)
         self.res_path = res_path
@@ -202,7 +202,8 @@ class GTInitial(DataPre, InertiaSolver):
         mean = mean_list.mean(axis=0)
         with open('./inertia_sum.log', 'at') as f:
             f.write('{}, screens_tar ={:4d}, screens_ref ={:4d}, pred_mean ={:7.3f}, curr_mean ={:7.3f};\n'.format(time.ctime(), len(self.tar_index_list), len(self.ref_index_list), mean[0], mean[1]))
-            
+
+
 if __name__ == '__main__':
     tar_path = './screens_tar'
     ref_path = './screens_ref'
@@ -210,10 +211,6 @@ if __name__ == '__main__':
     obj = GTInitial(tar_path, ref_path)
     
     tar_num, ref_num = obj.check_files()
-    
-    # for omega in numpy.arange(-0.3, 10, 0.01):
-        # print('omega = {}'.format(omega))
-    # obj.predict_rgb(omega=0, ref_index_list=range(5), log_saved=False, fig_saved=False)
     
     for ref_choose in range(5, ref_num+1):
         print('ref_choose = {}'.format(ref_choose))

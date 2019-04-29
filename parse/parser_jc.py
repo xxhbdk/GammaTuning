@@ -4,7 +4,7 @@ import numpy
 import pandas
 
 
-class JCExcel(object):
+class JCEXCEL(object):
 
     def __init__(self, filename):
         self.filename = filename
@@ -27,9 +27,6 @@ class JCExcel(object):
                     return None
         except Exception:
             exit('>>> something wrong with "{}" <<<'.format(self.filename))
-                
-    def __del_cols(self, labels=None):
-        self.sheet.drop(labels=labels, axis=1, inplace=True)
         
     def __add_cols(self):
         self.__max_Gray = self.sheet['Gray'].max()
@@ -57,6 +54,11 @@ class JCExcel(object):
         self.sheet['g_Dec'] = self.sheet['Reg_g'].apply(lambda ele: int(str(ele), 16))
         self.sheet['b_Dec'] = self.sheet['Reg_b'].apply(lambda ele: int(str(ele), 16))
         
+        self.sheet['Lv precision'] = (self.sheet['Lv'] - self.sheet['Lv theory']).abs() / self.sheet['Lv theory']
+    
+    def __del_cols(self, labels=None):
+        self.sheet.drop(labels=labels, axis=1, inplace=True)
+    
     def get_states(self):
         if not hasattr(self, 'sheet'):
             self.get_sheet()
@@ -99,7 +101,7 @@ class JCExcel(object):
         return self.__precision
         
     def __get_prec(self):
-        self.__precision = ((self.stop_sheet['Lv'] - self.stop_sheet['Lv theory']).abs() / self.stop_sheet['Lv theory']).mean()
+        self.__precision = self.sheet['Lv precision'].mean()
         
     def __get_shape(self):
         self.__bands_num = self.stop_sheet.loc[self.stop_sheet['Gray'] == self.__max_Gray, :].shape[0]
@@ -110,7 +112,7 @@ class JCExcel(object):
         返回一个大字典, 主要包含:
         bands
         band2Lmax
-        band2GrayLmax
+        band2GrayLmax -> GrayLmax顺序校验
         stop_GrayLmax2rgb
         init_GrayLmax2rgb
         '''
@@ -123,6 +125,7 @@ class JCExcel(object):
         
     def __get_attrs(self):
         self.attrs = dict()
+        
         bands = list()
         band2Lmax = dict()
         band2GrayLmax = dict()
@@ -199,13 +202,19 @@ class JCExcel(object):
         
         
 if __name__ == '__main__':
-    import os
-    filenames = list(os.path.join('./Gammaexcel', filename) for filename in os.listdir('./Gammaexcel'))
+
+    filename = 'Rack1-Pg1-Link1-JC--20190418175036-OK.xls'
+    obj = JCEXCEL(filename)
+    obj.get_sheet()
     
-    for filename in filenames:
-        print(filename)
-        obj = LinkJCExcel(filename)
-        print(obj.shape)
+    print(obj.precision)
+    # import os
+    # filenames = list(os.path.join('./Gammaexcel', filename) for filename in os.listdir('./Gammaexcel'))
+    
+    # for filename in filenames:
+        # print(filename)
+        # obj = LinkJCExcel(filename)
+        # print(obj.shape)
         
     
     

@@ -4,7 +4,7 @@
 import os
 import numpy
 
-from parse.parser_jc import JCExcel
+from parse.parser_jc import JCEXCEL
 
 
 class DataPre(object):
@@ -131,7 +131,7 @@ class DataPre(object):
     
     
 if __name__ == '__main__':
-    obj = DataPre('JCExcel')
+    obj = DataPre('JCEXCEL')
     obj.load_all_files('../screens_tar', '../screens_ref')
     # print(obj.instances)
     obj.filter_by_shape()
