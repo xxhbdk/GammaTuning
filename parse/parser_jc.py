@@ -190,7 +190,11 @@ class JCEXCEL(object):
             self.dominants[band_index] = dominant
             
     def __cal_dominant(self, rgb_arr):
+        '''
+        约束本征矢的长度为1
+        '''
         eigvals, eigvecs = numpy.linalg.eig(numpy.matmul(rgb_arr.T, rgb_arr))
+        eigvecs = eigvecs / numpy.linalg.norm(eigvecs, axis=0)
         
         max_idx = eigvals.argmax()
         dominant = eigvecs[:, max_idx]
