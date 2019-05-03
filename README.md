@@ -12,3 +12,10 @@ optimization for the initial values of rgb and reduction for the steps of iterat
    01. gamma项目
    02. gamma_report项目(报表系统)
 
+new design
+1. representation
+2. optimization
+3. estimation
+   
+   
+
