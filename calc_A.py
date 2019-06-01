@@ -204,7 +204,7 @@ class CalcAMatrix(object):
         
     def __calc_AMatrix(self, csv, epsilon):
         row_last = csv.iloc[-1, :]
-        delta_csv = csv - row_last
+        delta_csv = csv - row_last                                    ### 此次delta(u, v, Lv)计算存在一定问题, 最后一行为均值并非真实值
         
         delta_r = delta_csv['Vol_r'].values[:-1].reshape(-1, 1)
         delta_g = delta_csv['Vol_g'].values[:-1].reshape(-1, 1)
