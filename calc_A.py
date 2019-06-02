@@ -59,7 +59,10 @@ class FileParser(object):
         
     def __add_mean(self):
         for i in range(len(self.csv_list)):
-            self.csv_list[i] = self.csv_list[i].append(self.csv_list[i].mean(), ignore_index=True)
+            # 找到中心
+            row_mean_ori = self.csv_list[i].mean()
+            row_mean_tra = self.csv_list[i][(self.csv_list[i]['Reg_r'] == row_mean_ori['Reg_r']) & (self.csv_list[i]['Reg_g'] == row_mean_ori['Reg_g']) & (self.csv_list[i]['Reg_b'] == row_mean_ori['Reg_b'])].mean()
+            self.csv_list[i] = self.csv_list[i].append(row_mean_tra, ignore_index=True)
 
 
     def convert2norm(self, GrayV0_list=None, **kwargs):
@@ -204,7 +207,7 @@ class CalcAMatrix(object):
         
     def __calc_AMatrix(self, csv, epsilon):
         row_last = csv.iloc[-1, :]
-        delta_csv = csv - row_last                                    ### 此次delta(u, v, Lv)计算存在一定问题, 最后一行为均值并非真实值
+        delta_csv = csv - row_last
         
         delta_r = delta_csv['Vol_r'].values[:-1].reshape(-1, 1)
         delta_g = delta_csv['Vol_g'].values[:-1].reshape(-1, 1)
@@ -418,7 +421,7 @@ class LinearCheck(object):
         x1, x2 = x_min, x_max
         y1, y2 = W[0, 0] * x1 + W[1, 0], W[0, 0] * x2 + W[1, 0]
         
-        ax0.plot([x1, x2], [y1, y2], 'k--', alpha=0.8, label='$y\ =\ {}x\ +\ {}$'.format('{:.5f}'.format(W[0, 0]), '{:.5f}'.format(W[1, 0])))
+        ax0.plot([x1, x2], [y1, y2], 'k--', alpha=0.8, label='$y\ =\ {}x{}$'.format('{:.5f}'.format(W[0, 0]), '{:+.5f}'.format(W[1, 0])))
         ax0.legend()
         
         return ax0
@@ -463,6 +466,6 @@ if __name__ == '__main__':
     # obj.feed_params(band_num=3, Gray_list=Gray_list)
     obj.get_AMatrix()
     
-    # obj2 = LinearCheck('./540S')
-    # obj2.get_Graph()
+    obj2 = LinearCheck('./540S')
+    obj2.get_Graph()
 
