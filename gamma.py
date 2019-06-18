@@ -82,8 +82,8 @@ class GTInitial(DataPre, InertiaSolver):
                 
         fig = plt.figure(figsize=(8, 6))
         ax1 = plt.subplot()
-        ax1.plot(screens_ref, pred_mean, label='$pred\_mean$')
-        ax1.plot(screens_ref, curr_mean, label='$curr\_mean$')
+        ax1.plot(screens_ref, pred_mean, label='$pred\_mean$', marker='x')
+        ax1.plot(screens_ref, curr_mean, label='$curr\_mean$', marker='.')
         ax1.set(xlabel='$ref\_screens\_count$', ylabel='$mean\_distance$')
         ax1.legend()
         fig.savefig('./inertia_sum.png', dpi=300)
