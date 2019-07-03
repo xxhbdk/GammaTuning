@@ -61,7 +61,12 @@ class FileParser(object):
         for i in range(len(self.csv_list)):
             # 找到中心
             row_mean_ori = self.csv_list[i].mean()
-            row_mean_tra = self.csv_list[i][(self.csv_list[i]['Reg_r'] == row_mean_ori['Reg_r']) & (self.csv_list[i]['Reg_g'] == row_mean_ori['Reg_g']) & (self.csv_list[i]['Reg_b'] == row_mean_ori['Reg_b'])].mean()
+            
+            csv_filter = self.csv_list[i][(self.csv_list[i]['Reg_r'] == row_mean_ori['Reg_r']) & (self.csv_list[i]['Reg_g'] == row_mean_ori['Reg_g']) & (self.csv_list[i]['Reg_b'] == row_mean_ori['Reg_b'])]
+            if csv_filter.size == 0:
+                raise Exception('>>> can not find the mean rgb({}, {}, {}) in file named with "{}" <<<'.format(*row_mean_ori.tolist()[3:], self.filename_list_tra[i]))
+            
+            row_mean_tra = csv_filter.mean()
             self.csv_list[i] = self.csv_list[i].append(row_mean_tra, ignore_index=True)
 
 
@@ -249,7 +254,7 @@ class CalcAMatrix(object):
                                 self.AMatrix_list[band_idx][Gray_idx] = AMatrix_tmp
                                 break
                         else:
-                            raise Exception('>>> something confusing happend on (band_idx, Gray_idx) = ({}, {}) <<<'.format(band_idx, Gray_idx))
+                            raise Exception('>>> something confusing happened on (band_idx, Gray_idx) = ({}, {}) <<<'.format(band_idx, Gray_idx))
 
 
     def __get_band_seq(self, band_idx):
@@ -335,7 +340,7 @@ class LinearCheck(object):
             b_start = self.__get_start(csv_old, 'Reg_b')
             
             if not (r_start < g_start < b_start):
-                raise Exception('>>> does not satisfy our convertion: "r_start({}) < g_start({}) < b_start({})" <<<'.format(r_start, g_start, b_start))
+                raise Exception('>>> does not satisfy our convention: "r_start({}) < g_start({}) < b_start({})" <<<'.format(r_start, g_start, b_start))
             
             start_list = [r_start, g_start, b_start]
             self.__get_Graph(csv_old, csv_new, start_list, filename, fig_saved, epsilon)
